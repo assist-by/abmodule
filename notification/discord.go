@@ -18,15 +18,22 @@ type DiscordMessage struct {
 }
 
 type Embed struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Color       int    `json:"color"`
+	Title       string       `json:"title,omitempty"`
+	Description string       `json:"description,omitempty"`
+	Color       int          `json:"color,omitempty"`
+	Fields      []EmbedField `json:"fields,omitempty"`
+	Footer      *EmbedFooter `json:"footer,omitempty"`
+	Timestamp   string       `json:"timestamp,omitempty"`
 }
 
 type EmbedField struct {
 	Name   string `json:"name"`
 	Value  string `json:"value"`
 	Inline bool   `json:"inline"`
+}
+
+type EmbedFooter struct {
+	Text string `json:"text"`
 }
 
 func SendDiscordAlert(embed Embed, discordWebhookURL string) error {
