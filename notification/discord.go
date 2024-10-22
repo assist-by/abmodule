@@ -23,6 +23,12 @@ type Embed struct {
 	Color       int    `json:"color"`
 }
 
+type EmbedField struct {
+	Name   string `json:"name"`
+	Value  string `json:"value"`
+	Inline bool   `json:"inline"`
+}
+
 func SendDiscordAlert(embed Embed, discordWebhookURL string) error {
 	message := DiscordMessage{
 		Embeds: []Embed{embed},
