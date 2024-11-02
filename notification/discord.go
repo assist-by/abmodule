@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	signalType "github.com/assist-by/libStruct/enums/signalType"
 )
 
 var (
@@ -66,9 +68,9 @@ func SendDiscordAlert(embed Embed, discordWebhookURL string) error {
 
 func GetColorForDiscord(signal string) int {
 	switch signal {
-	case "LONG":
+	case signalType.Long.String():
 		return 0x00FF00 // Green
-	case "SHORT":
+	case signalType.Short.String():
 		return 0xFF0000 // Red
 	default:
 		return 0x0000FF // Blue
