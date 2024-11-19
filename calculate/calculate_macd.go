@@ -1,28 +1,23 @@
 package calculate
 
-// MACD 계산 개선
-func CalculateMACD(prices []float64) (float64, float64) {
+// 정규화된 가격으로 MACD 계산
+func CalculateMACD(prices []float64) ([]float64, []float64) {
 	if len(prices) < 26 {
-		return 0, 0
+		return nil, nil // Not enough data
 	}
 
-	// 모든 가격을 백만 단위로 정규화
-	normalizedPrices := make([]float64, len(prices))
-	for i := range prices {
-		normalizedPrices[i] = prices[i] * PRICE_MULTIPLIER
+	// 전체 기간에 대한 EMA 계산
+	ema12Slice := CalculateEMASlice(prices, 12)
+	ema26Slice := CalculateEMASlice(prices, 26)
+
+	// MACD Line 계산
+	macdLine := make([]float64, len(prices))
+	for i := 0; i < len(prices); i++ {
+		macdLine[i] = ema12Slice[i] - ema26Slice[i]
 	}
 
-	ema12 := CalculateEMA(normalizedPrices, 12)
-	ema26 := CalculateEMA(normalizedPrices, 26)
-	macdLine := (ema12 - ema26) / PRICE_MULTIPLIER
+	// Signal Line 계산 (9일 EMA of MACD Line)
+	signalLine := CalculateEMASlice(macdLine, 9)
 
-	ema12Slice := CalculateEMASlice(normalizedPrices, 12)
-	ema26Slice := CalculateEMASlice(normalizedPrices, 26)
-	macdSlice := make([]float64, len(prices))
-	for i := range prices {
-		macdSlice[i] = (ema12Slice[i] - ema26Slice[i]) / PRICE_MULTIPLIER
-	}
-
-	signalLine := CalculateEMA(macdSlice, 9)
 	return macdLine, signalLine
 }

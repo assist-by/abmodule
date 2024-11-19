@@ -2,14 +2,14 @@ package calculate
 
 import "math"
 
-// Parabolic SAR 계산 개선
+// 정규화된 가격으로 Parabolic SAR 계산
 func CalculateParabolicSAR(highs, lows []float64) float64 {
-	// 모든 가격을 백만 단위로 정규화
 	normalizedHighs := make([]float64, len(highs))
 	normalizedLows := make([]float64, len(lows))
+
 	for i := range highs {
-		normalizedHighs[i] = highs[i] * PRICE_MULTIPLIER
-		normalizedLows[i] = lows[i] * PRICE_MULTIPLIER
+		normalizedHighs[i] = normalizePrice(highs[i])
+		normalizedLows[i] = normalizePrice(lows[i])
 	}
 
 	af := 0.02
@@ -45,6 +45,5 @@ func CalculateParabolicSAR(highs, lows []float64) float64 {
 			}
 		}
 	}
-
-	return sar / PRICE_MULTIPLIER
+	return sar
 }
