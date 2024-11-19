@@ -1,31 +1,26 @@
 package calculate
 
-/// MACD 계산
+// MACD 계산 개선
 func CalculateMACD(prices []float64) (float64, float64) {
 	if len(prices) < 26 {
 		return 0, 0
 	}
 
-	// 가격이 1보다 작으면 1000을 곱해서 스케일업
-	scaleFactor := 1.0
-	if prices[0] < 1.0 {
-		scaleFactor = 1000.0
+	// 모든 가격을 백만 단위로 정규화
+	normalizedPrices := make([]float64, len(prices))
+	for i := range prices {
+		normalizedPrices[i] = prices[i] * PRICE_MULTIPLIER
 	}
 
-	scaledPrices := make([]float64, len(prices))
-	for i := 0; i < len(prices); i++ {
-		scaledPrices[i] = prices[i] * scaleFactor
-	}
+	ema12 := CalculateEMA(normalizedPrices, 12)
+	ema26 := CalculateEMA(normalizedPrices, 26)
+	macdLine := (ema12 - ema26) / PRICE_MULTIPLIER
 
-	ema12 := CalculateEMA(scaledPrices, 12)
-	ema26 := CalculateEMA(scaledPrices, 26)
-	macdLine := (ema12 - ema26) / scaleFactor // 결과를 다시 원래 스케일로
-
-	ema12Slice := CalculateEMASlice(scaledPrices, 12)
-	ema26Slice := CalculateEMASlice(scaledPrices, 26)
+	ema12Slice := CalculateEMASlice(normalizedPrices, 12)
+	ema26Slice := CalculateEMASlice(normalizedPrices, 26)
 	macdSlice := make([]float64, len(prices))
-	for i := 0; i < len(prices); i++ {
-		macdSlice[i] = (ema12Slice[i] - ema26Slice[i]) / scaleFactor
+	for i := range prices {
+		macdSlice[i] = (ema12Slice[i] - ema26Slice[i]) / PRICE_MULTIPLIER
 	}
 
 	signalLine := CalculateEMA(macdSlice, 9)
