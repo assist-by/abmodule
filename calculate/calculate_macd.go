@@ -1,9 +1,9 @@
 package calculate
 
-// 정규화된 가격으로 MACD 계산
+/// MACD 계산
 func CalculateMACD(prices []float64) (float64, float64) {
 	if len(prices) < 26 {
-		return 0, 0
+		return 0, 0 // Not enough data
 	}
 
 	ema12 := CalculateEMA(prices, 12)

@@ -2,45 +2,37 @@ package calculate
 
 import "math"
 
-// 정규화된 가격으로 Parabolic SAR 계산
+// / Parabolic SAR 계산
 func CalculateParabolicSAR(highs, lows []float64) float64 {
-	normalizedHighs := make([]float64, len(highs))
-	normalizedLows := make([]float64, len(lows))
-
-	for i := range highs {
-		normalizedHighs[i] = normalizePrice(highs[i])
-		normalizedLows[i] = normalizePrice(lows[i])
-	}
-
 	af := 0.02
 	maxAf := 0.2
-	sar := normalizedLows[0]
-	ep := normalizedHighs[0]
+	sar := lows[0]
+	ep := highs[0]
 	isLong := true
 
-	for i := 1; i < len(normalizedHighs); i++ {
+	for i := 1; i < len(highs); i++ {
 		if isLong {
 			sar = sar + af*(ep-sar)
-			if normalizedHighs[i] > ep {
-				ep = normalizedHighs[i]
+			if highs[i] > ep {
+				ep = highs[i]
 				af = math.Min(af+0.02, maxAf)
 			}
-			if sar > normalizedLows[i] {
+			if sar > lows[i] {
 				isLong = false
 				sar = ep
-				ep = normalizedLows[i]
+				ep = lows[i]
 				af = 0.02
 			}
 		} else {
 			sar = sar - af*(sar-ep)
-			if normalizedLows[i] < ep {
-				ep = normalizedLows[i]
+			if lows[i] < ep {
+				ep = lows[i]
 				af = math.Min(af+0.02, maxAf)
 			}
-			if sar < normalizedHighs[i] {
+			if sar < highs[i] {
 				isLong = true
 				sar = ep
-				ep = normalizedHighs[i]
+				ep = highs[i]
 				af = 0.02
 			}
 		}
