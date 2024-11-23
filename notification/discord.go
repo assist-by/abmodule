@@ -66,11 +66,11 @@ func SendDiscordAlert(embed Embed, discordWebhookURL string) error {
 	return nil
 }
 
-func GetColorForDiscord(signal string) int {
+func GetColorForDiscord(signal lib.SignalType) int {
 	switch signal {
-	case lib.SIGNAL_LONG.String():
+	case lib.SIGNAL_LONG:
 		return 0x00FF00 // Green
-	case lib.SIGNAL_SHORT.String():
+	case lib.SIGNAL_SHORT:
 		return 0xFF0000 // Red
 	default:
 		return 0x0000FF // Blue
